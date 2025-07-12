@@ -1,39 +1,33 @@
-<?php
-require_once __DIR__ . '/../includes/config.php';
+const mysql = require('mysql2/promise');
+const config = require('../includes/config');
 
-header('Content-Type: application/json');
+module.exports = async (req, res) => {
+  // Auth check
+  if (req.headers.authorization !== config.ADMIN_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
-// Auth Check
-if (!isset($_SERVER['HTTP_AUTHORIZATION']) || 
-    $_SERVER['HTTP_AUTHORIZATION'] !== getenv('ADMIN_TOKEN')) {
-    die(json_encode(['error' => 'Unauthorized']));
-}
+  const { hwid, expiry } = req.body;
+  const key = `TINY-${Math.random().toString(36).slice(2, 6).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
-$input = json_decode(file_get_contents('php://input'), true);
-$hwid = $input['hwid'] ?? null;
-$expiry = $input['expiry'] ?? 30;
+  try {
+    const conn = await mysql.createConnection({
+      host: config.DB_HOST,
+      user: config.DB_USER,
+      password: config.DB_PASS,
+      database: config.DB_NAME,
+    });
 
-try {
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, 
-        DB_USER, 
-        DB_PASS
+    await conn.execute(
+      'INSERT INTO `keys` (key_value, hwid_lock, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? DAY))',
+      [key, hwid, expiry]
     );
-    
-    // Generate key (format: TINY-XXXX-XXXX)
-    $key = 'TINY-' . strtoupper(substr(md5(uniqid()), 0, 4)) . 
-           '-' . strtoupper(substr(md5(uniqid()), 4, 4));
 
-    $stmt = $pdo->prepare("INSERT INTO `keys` 
-        (key_value, hwid_lock, expires_at) 
-        VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? DAY))");
-    $stmt->execute([$key, $hwid, $expiry]);
-    
-    echo json_encode([
-        'key' => $key,
-        'expires' => date('Y-m-d', strtotime("+$expiry days"))
-    ]);
-} catch(PDOException $e) {
-    echo json_encode(['error' => 'Database error']);
-}
-?>
+    res.json({ 
+      key, 
+      expires: new Date(Date.now() + expiry * 86400000).toISOString() 
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
+};
