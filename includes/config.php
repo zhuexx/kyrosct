@@ -1,11 +1,7 @@
-<?php
-// Railway automatically provides these via environment variables
-define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
-define('DB_USER', getenv('MYSQLUSER') ?: 'root');
-define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
-define('DB_NAME', getenv('MYSQLDATABASE') ?: 'tiny_keys');
-
-// Set in Railway Dashboard → Variables
-define('ADMIN_TOKEN', getenv('ADMIN_TOKEN') ?: 'default-secret');
-define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'admin123');
-?>
+module.exports = {
+  DB_HOST: process.env.DB_HOST,
+  DB_USER: process.env.DB_USER,
+  DB_PASS: process.env.DB_PASS,
+  DB_NAME: process.env.DB_NAME,
+  ADMIN_TOKEN: process.env.ADMIN_TOKEN,
+};
