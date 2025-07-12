@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS `keys` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `key_value` VARCHAR(255) NOT NULL,
-  `hwid_lock` VARCHAR(255) DEFAULT NULL,
-  `expires_at` DATETIME NOT NULL,
-  `is_used` TINYINT(1) DEFAULT 0,
-  `used_at` DATETIME DEFAULT NULL,
-  `used_by` VARCHAR(255) DEFAULT NULL
-);
