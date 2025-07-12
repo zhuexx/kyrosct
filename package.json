@@ -1,0 +1,10 @@
+{
+  "name": "key-generator",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.0"
+  }
+}
