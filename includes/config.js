@@ -1,7 +1,7 @@
 module.exports = {
-  DB_HOST: process.env.DB_HOST,
-  DB_USER: process.env.DB_USER,
-  DB_PASS: process.env.DB_PASS,
-  DB_NAME: process.env.DB_NAME,
-  ADMIN_TOKEN: process.env.ADMIN_TOKEN,
+  DB_HOST: process.env.DB_HOST || 'mysql-host',
+  DB_USER: process.env.DB_USER || 'user',
+  DB_PASS: process.env.DB_PASS || 'password',
+  DB_NAME: process.env.DB_NAME || 'dbname',
+  ADMIN_TOKEN: process.env.ADMIN_TOKEN || 'default-secret'
 };
