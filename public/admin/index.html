@@ -1,0 +1,23 @@
+<?php
+require_once __DIR__ . '/../../includes/config.php';
+
+// Basic Auth Check
+if (!isset($_SERVER['PHP_AUTH_USER']) || 
+    $_SERVER['PHP_AUTH_USER'] !== 'admin' || 
+    $_SERVER['PHP_AUTH_PW'] !== getenv('ADMIN_PASSWORD')) {
+    header('WWW-Authenticate: Basic realm="Restricted Area"');
+    header('HTTP/1.0 401 Unauthorized');
+    die('Access denied');
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Welcome, Admin</h1>
+    <!-- Add admin features here -->
+</body>
+</html>
